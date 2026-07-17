@@ -18,11 +18,9 @@ const RightSlider = defineAsyncComponent(() => import('@/components/editor/Right
 const UploadImgDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/UploadImgDialog.vue'))
 const InsertFormDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/InsertFormDialog.vue'))
 const ImportMarkdownDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/ImportMarkdownDialog.vue'))
-const LocalImageUploadDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/LocalImageUploadDialog.vue'))
 const FormulaEditorDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/FormulaEditorDialog.vue'))
 const TemplateDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/TemplateDialog.vue'))
 const CustomComponentDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/CustomComponentDialog.vue'))
-const MarketplaceDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/MarketplaceDialog.vue'))
 
 const uiStore = useUIStore()
 
@@ -36,11 +34,9 @@ const {
   isShowUploadImgDialog,
   isShowInsertFormDialog,
   isShowImportMdDialog,
-  isShowLocalImageUpload,
   isShowFormulaEditorDialog,
   isShowTemplateDialog,
   isShowComponentDialog,
-  isShowMarketplaceDialog,
 } = storeToRefs(uiStore)
 
 const editorPanelCompRef = ref<InstanceType<typeof EditorPanel> | null>(null)
@@ -286,15 +282,11 @@ const isImgLoading = computed(() => unref(editorPanelCompRef.value?.isImgLoading
 
       <ImportMarkdownDialog v-if="isShowImportMdDialog" />
 
-      <LocalImageUploadDialog v-if="isShowLocalImageUpload" />
-
       <FormulaEditorDialog v-if="isShowFormulaEditorDialog" />
 
       <TemplateDialog v-if="isShowTemplateDialog" />
 
       <CustomComponentDialog v-if="isShowComponentDialog" />
-
-      <MarketplaceDialog v-if="isShowMarketplaceDialog" />
     </main>
 
     <Footer />

@@ -2,8 +2,7 @@
 import type { MarkdownHeading } from '@/lib/markdown/headings'
 import { StateEffect } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
-import { ArrowUpDown, BookOpen, Clock, Columns2, Ellipsis, Eye, FileText, Keyboard, LogIn, Monitor, Moon, PenLine, Pilcrow, Share2, Smartphone, Sun, Type, User } from '@lucide/vue'
-import NotificationBell from '@/components/editor/editor-header/NotificationBell.vue'
+import { ArrowUpDown, BookOpen, Clock, Columns2, Ellipsis, Eye, FileText, Keyboard, Monitor, Moon, PenLine, Pilcrow, Smartphone, Sun, Type } from '@lucide/vue'
 import FooterDocumentSwitcher from '@/components/editor/footer/FooterDocumentSwitcher.vue'
 import FooterOutlinePopover from '@/components/editor/footer/FooterOutlinePopover.vue'
 import {
@@ -17,20 +16,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useSyncFooterMeta } from '@/composables/useSyncStatusMeta'
-import { getLocaleOption, getNextLocale } from '@/i18n/constants'
 import { formatRelativeTime } from '@/lib/format/relative-time'
 import {
   clampGoToLineValue,
   jumpToLine,
 } from '@/lib/markdown/headingNavigation'
 import { computeHeadingBreadcrumbs, extractMarkdownHeadings } from '@/lib/markdown/headings'
-import { isAccountUiEnabled } from '@/services/account/config'
-import { isShareUiEnabled } from '@/services/share/client'
-import { isSyncUiEnabled } from '@/services/sync/client'
-import { useAuthStore } from '@/stores/auth'
 import { useEditorStore } from '@/stores/editor'
-import { useLocaleStore } from '@/stores/locale'
 import { usePostStore } from '@/stores/post'
 import { useRenderStore } from '@/stores/render'
 import { useUIStore } from '@/stores/ui'
@@ -39,61 +31,18 @@ const renderStore = useRenderStore()
 const editorStore = useEditorStore()
 const postStore = usePostStore()
 const uiStore = useUIStore()
-const authStore = useAuthStore()
-const localeStore = useLocaleStore()
 const { readingTime } = storeToRefs(renderStore)
 const { editor } = storeToRefs(editorStore)
 const { currentPost } = storeToRefs(postStore)
 const { isDark } = storeToRefs(uiStore)
 const { isMobile, viewMode, previewDevice, enableScrollSync } = storeToRefs(uiStore)
-const { isLoggedIn } = storeToRefs(authStore)
-const { locale } = storeToRefs(localeStore)
-const showAccountUi = isAccountUiEnabled()
-const showSyncUi = isSyncUiEnabled()
-const showShareUi = isShareUiEnabled()
-const { syncFooterIcon, syncFooterIconClass, syncTooltip } = useSyncFooterMeta()
 
 const isMoreOpen = ref(false)
-const { t, locale: i18nLocale } = useI18n()
-
-const currentLocaleOption = computed(() => getLocaleOption(locale.value))
-
-const nextLocaleOption = computed(() => getLocaleOption(getNextLocale(locale.value)))
-
-const languageTooltip = computed(() => {
-  void i18nLocale.value
-  return t(`footer.switchToLanguage`, { language: t(nextLocaleOption.value.labelKey) })
-})
-
-const accountTooltip = computed(() => {
-  if (!isLoggedIn.value)
-    return t(`footer.loginAccount`)
-  return t(`footer.accountWithLogin`, { login: authStore.user?.login ?? '' })
-})
-
-function openAccountDialog() {
-  isMoreOpen.value = false
-  uiStore.toggleShowAccountDialog(true)
-}
-
-function openSyncDialog() {
-  isMoreOpen.value = false
-  uiStore.toggleShowSyncDialog(true)
-}
-
-function openShareDialog() {
-  isMoreOpen.value = false
-  uiStore.openShareDialog()
-}
+const { t } = useI18n()
 
 function toggleTheme() {
   isMoreOpen.value = false
   uiStore.toggleDark()
-}
-
-function toggleLanguage() {
-  isMoreOpen.value = false
-  void localeStore.cycleLocale()
 }
 
 const cursorLine = ref(1)
@@ -405,89 +354,7 @@ const showDeviceToggle = computed(() => viewMode.value !== `edit` && !isMobile.v
         <span class="hidden text-border sm:block">·</span>
 
         <div class="flex items-center gap-0.5">
-          <template v-if="showAccountUi">
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  :aria-label="t('common.account')"
-                  class="hidden cursor-pointer items-center rounded-md p-1.5 transition-colors hover:bg-accent hover:text-foreground sm:flex"
-                  :class="isLoggedIn ? 'text-primary' : ''"
-                  @click="openAccountDialog"
-                >
-                  <img
-                    v-if="isLoggedIn && authStore.user?.avatar"
-                    :src="authStore.user.avatar"
-                    :alt="authStore.user.login"
-                    class="size-3 rounded-full"
-                  >
-                  <User v-else-if="isLoggedIn" class="size-3" />
-                  <LogIn v-else class="size-3" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" :side-offset="6" class="text-xs text-muted-foreground">
-                <p>{{ accountTooltip }}</p>
-              </TooltipContent>
-            </Tooltip>
-
-            <NotificationBell variant="footer" />
-          </template>
-
           <div class="hidden items-center gap-0.5 sm:flex">
-            <template v-if="showSyncUi">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <button
-                    :aria-label="t('menu.cloudSync')"
-                    class="flex cursor-pointer items-center rounded-md p-1.5 transition-colors hover:bg-accent hover:text-foreground"
-                    @click="openSyncDialog"
-                  >
-                    <component
-                      :is="syncFooterIcon"
-                      class="size-3"
-                      :class="syncFooterIconClass"
-                    />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" :side-offset="6" class="text-xs text-muted-foreground">
-                  <p>{{ isLoggedIn ? syncTooltip : t('menu.cloudSync') }}</p>
-                </TooltipContent>
-              </Tooltip>
-            </template>
-
-            <template v-if="showShareUi">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <button
-                    :aria-label="t('menu.sharePreview')"
-                    class="flex cursor-pointer items-center rounded-md p-1.5 transition-colors hover:bg-accent hover:text-foreground"
-                    @click="openShareDialog"
-                  >
-                    <Share2 class="size-3" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" :side-offset="6" class="text-xs text-muted-foreground">
-                  <p>{{ t('menu.sharePreview') }}</p>
-                </TooltipContent>
-              </Tooltip>
-            </template>
-
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  :aria-label="t('footer.toggleLanguage')"
-                  class="flex cursor-pointer items-center rounded-md p-1.5 transition-colors hover:bg-accent hover:text-foreground"
-                  @click="toggleLanguage"
-                >
-                  <span class="min-w-3 text-center text-[10px] font-semibold leading-none tracking-wide">
-                    {{ currentLocaleOption.shortLabel }}
-                  </span>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" :side-offset="6" class="text-xs text-muted-foreground">
-                <p>{{ languageTooltip }}</p>
-              </TooltipContent>
-            </Tooltip>
-
             <Tooltip>
               <TooltipTrigger as-child>
                 <button
@@ -516,50 +383,6 @@ const showDeviceToggle = computed(() => viewMode.value !== `edit` && !isMobile.v
               </button>
             </PopoverTriggerPrimitive>
             <PopoverContent side="top" :side-offset="8" align="end" class="w-48 p-1">
-              <button
-                v-if="showAccountUi"
-                class="flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs transition-colors hover:bg-accent"
-                @click="openAccountDialog"
-              >
-                <img
-                  v-if="isLoggedIn && authStore.user?.avatar"
-                  :src="authStore.user.avatar"
-                  :alt="authStore.user.login"
-                  class="size-3 rounded-full"
-                >
-                <User v-else-if="isLoggedIn" class="size-3 shrink-0" />
-                <LogIn v-else class="size-3 shrink-0" />
-                <span class="min-w-0 flex-1 truncate">{{ accountTooltip }}</span>
-              </button>
-              <button
-                v-if="showSyncUi"
-                class="flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs transition-colors hover:bg-accent"
-                @click="openSyncDialog"
-              >
-                <component
-                  :is="syncFooterIcon"
-                  class="size-3 shrink-0"
-                  :class="syncFooterIconClass"
-                />
-                <span>{{ isLoggedIn ? syncTooltip : t('menu.cloudSync') }}</span>
-              </button>
-              <button
-                v-if="showShareUi"
-                class="flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs transition-colors hover:bg-accent"
-                @click="openShareDialog"
-              >
-                <Share2 class="size-3 shrink-0" />
-                <span>{{ t('menu.sharePreview') }}</span>
-              </button>
-              <button
-                class="flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs transition-colors hover:bg-accent"
-                @click="toggleLanguage"
-              >
-                <span class="inline-flex size-3 shrink-0 items-center justify-center text-[10px] font-semibold leading-none">
-                  {{ currentLocaleOption.shortLabel }}
-                </span>
-                <span>{{ languageTooltip }}</span>
-              </button>
               <button
                 class="flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs transition-colors hover:bg-accent"
                 @click="toggleTheme"

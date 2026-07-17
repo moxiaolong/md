@@ -10,8 +10,6 @@ import {
   legendOptions,
   themeOptions,
 } from '@md/shared/configs'
-import { isMarketplaceThemeKey } from '@md/shared/types'
-import { useMarketplaceStore } from '@/stores/marketplace'
 
 type Translate = (key: string) => string
 
@@ -97,9 +95,7 @@ function localizeLegendOptions(t: Translate): IConfigOption[] {
   }))
 }
 
-export function getThemeLabel(t: Translate, theme: ThemeName, fallback?: string): string {
-  if (isMarketplaceThemeKey(theme))
-    return fallback || theme
+export function getThemeLabel(t: Translate, theme: ThemeName): string {
   return t(`styleOptions.theme.${theme}.label`)
 }
 
@@ -122,21 +118,16 @@ export function createLocalizedStyleOptions(
     headingStyleOptions: localizeHeadingStyleOptions(t),
     legendOptions: localizeLegendOptions(t),
     getThemeLabel: (theme: ThemeName) => {
-      const installed = installedThemeOptions.find(o => o.value === theme)
-      return getThemeLabel(t, theme, installed?.label)
+      return getThemeLabel(t, theme)
     },
   }
 }
 
 export function useLocalizedStyleOptions() {
   const { t, locale } = useI18n()
-  const marketplaceStore = useMarketplaceStore()
 
   return computed(() => {
     void locale.value
-    // Depend on installed themes map so options refresh after install/uninstall
-    void marketplaceStore.installedThemes
-    const installed = marketplaceStore.getInstalledThemeOptions()
-    return createLocalizedStyleOptions(t, installed)
+    return createLocalizedStyleOptions(t, [])
   })
 }

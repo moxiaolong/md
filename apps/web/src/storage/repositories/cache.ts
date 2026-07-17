@@ -1,4 +1,4 @@
-import { MAX_AI_IMAGE_ENTRIES, MAX_IMAGE_MAP_ENTRIES } from '@/storage/keys'
+import { MAX_IMAGE_MAP_ENTRIES } from '@/storage/keys'
 
 /** Trim JSON object map to the most recent maxEntries entries. */
 export function trimRecordMap(raw: string, maxEntries: number): string {
@@ -35,7 +35,5 @@ export function trimArray(raw: string, maxEntries: number): string {
 export function trimCacheValue(key: string, value: string): string {
   if (key === `uploaded_image_map`)
     return trimRecordMap(value, MAX_IMAGE_MAP_ENTRIES)
-  if (key === `ai_generated_images` || key === `ai_image_timestamps` || key === `ai_image_prompts`)
-    return trimArray(value, MAX_AI_IMAGE_ENTRIES)
   return value
 }

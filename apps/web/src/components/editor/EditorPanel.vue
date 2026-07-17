@@ -3,40 +3,31 @@ import { Compartment, EditorState, Prec } from '@codemirror/state'
 import { EditorView, keymap, placeholder } from '@codemirror/view'
 import { history, markdownSetup, replaceDocumentWithoutHistory, resetEditorHistory, theme } from '@md/shared/editor'
 import { toBase64 } from '@md/shared/utils/fileHelpers'
-import { defineAsyncComponent } from 'vue'
 import SlashCommandMenu from '@/components/editor/SlashCommandMenu.vue'
 import { SearchTab } from '@/components/ui/search-tab'
 import { createComponentCompletionExtension } from '@/composables/useComponentCompletion'
 import { useEditorRefresh } from '@/composables/useEditorRefresh'
-import { useImageUploader } from '@/composables/useImageUploader'
 import { completeInitialPreviewBoot } from '@/composables/useInitialPreviewBoot'
 import { useLocalizedAllComponents } from '@/composables/useLocalizedBuiltinComponents'
-import { useLocalizedUploadHostOptions } from '@/composables/useLocalizedUploadHosts'
 import { useSlashCommand } from '@/composables/useSlashCommand'
 import { CONTENT_FONT_LANG } from '@/i18n/constants'
 import { toStoredDateTime } from '@/lib/format/datetime'
 import { jumpToAdjacentHeading } from '@/lib/markdown/headingNavigation'
 import { contentHasMath, loadMathJax, MATHJAX_READY_EVENT } from '@/lib/preview/mathjax'
 import { validateImageFile } from '@/lib/upload/validate-image'
-import { fileUpload } from '@/services/upload'
-import { store } from '@/storage'
 import { useEditorStore } from '@/stores/editor'
 import { usePostStore } from '@/stores/post'
 import { useRenderStore } from '@/stores/render'
 import { useThemeStore } from '@/stores/theme'
 import { useUIStore } from '@/stores/ui'
 
-const SidebarAIToolbar = defineAsyncComponent(() => import('@/components/ai/SidebarAIToolbar.vue'))
-
 const { t, locale } = useI18n()
-const uploadHostOptions = useLocalizedUploadHostOptions()
 const editorStore = useEditorStore()
 const postStore = usePostStore()
 const renderStore = useRenderStore()
 const themeStore = useThemeStore()
 const uiStore = useUIStore()
 const localizedAllComponents = useLocalizedAllComponents()
-const { upload } = useImageUploader()
 const { editorRefresh, scheduleEditorRefresh } = useEditorRefresh()
 
 const {
@@ -64,15 +55,9 @@ function onWrapperContextMenuCapture(e: MouseEvent) {
 const { editor } = storeToRefs(editorStore)
 const { isDark } = storeToRefs(uiStore)
 const { posts, currentPostIndex, currentPost } = storeToRefs(postStore)
-const {
-  isMobile,
-  enableImageReupload,
-  viewMode,
-} = storeToRefs(uiStore)
+const { viewMode } = storeToRefs(uiStore)
 
 const { toggleShowUploadImgDialog } = uiStore
-
-const showEditor = computed(() => viewMode.value !== `preview`)
 
 const codeMirrorView = shallowRef<EditorView | null>(null)
 const themeCompartment = new Compartment()
@@ -166,25 +151,12 @@ function handleGlobalKeydown(e: KeyboardEvent) {
 }
 
 // --- Image upload ---
-async function beforeImageUpload(file: File) {
+function beforeImageUpload(file: File): boolean {
   const checkResult = validateImageFile(file, t)
   if (!checkResult.ok) {
     toast.error(checkResult.msg)
     return false
   }
-
-  const imgHost = (await store.get(`imgHost`)) || `default`
-  await store.set(`imgHost`, imgHost)
-
-  const config = await store.get(`${imgHost}Config`)
-  const isValidHost = imgHost === `default` || config
-  if (!isValidHost) {
-    const hostLabel = uploadHostOptions.value.find(option => option.value === imgHost)?.label ?? imgHost
-    toast.error(t('editorPanel.configureImgHost', { host: hostLabel }))
-    toggleShowUploadImgDialog(true)
-    return false
-  }
-
   return true
 }
 
@@ -203,16 +175,6 @@ function uploaded(imageUrl: string) {
   toast.success(t('editorPanel.uploadSuccess'))
 }
 
-async function compressImage(file: File) {
-  const { default: imageCompression } = await import(`browser-image-compression`)
-  const options = {
-    maxSizeMB: 1,
-    maxWidthOrHeight: 1920,
-    useWebWorker: true,
-  }
-  return await imageCompression(file, options)
-}
-
 async function uploadImage(
   file: File,
   cb?: { (url: any, data: string): void, (arg0: unknown): void } | undefined,
@@ -220,20 +182,15 @@ async function uploadImage(
 ) {
   try {
     isImgLoading.value = true
-    const useCompression = (await store.get(`useCompression`)) === `true`
-    if (useCompression) {
-      file = await compressImage(file)
-    }
     const base64Content = await toBase64(file)
-    const url = await fileUpload(base64Content, file)
     if (cb) {
-      cb(url, base64Content)
+      cb(base64Content, base64Content)
     }
     else {
-      uploaded(url)
+      uploaded(base64Content)
     }
     if (applyUrl) {
-      return uploaded(url)
+      return uploaded(base64Content)
     }
   }
   catch (err) {
@@ -358,7 +315,7 @@ function mdLocalToRemote() {
 
 // --- Image paste handler for CodeMirror ---
 function createPasteHandler() {
-  return (event: ClipboardEvent, view: EditorView) => {
+  return (event: ClipboardEvent, _view: EditorView) => {
     if (event.clipboardData?.items && [...event.clipboardData.items].some(item => item.kind === 'file')) {
       if (isImgLoading.value) {
         return true
@@ -383,69 +340,9 @@ function createPasteHandler() {
 
     const text = event.clipboardData?.getData('text/plain')
     if (text) {
-      const mdImgRegex = /!\[(.*?)\]\((https?:\/\/[^)]+)\)/g
-      const matches = [...text.matchAll(mdImgRegex)]
-
-      if (matches.length > 0) {
-        isImgLoading.value = true
-
-        let previewText = text
-        const placeholderMap = new Map<string, { originalUrl: string, originalAlt: string }>()
-
-        let matchIndex = 0
-        previewText = previewText.replace(mdImgRegex, (_, alt, url) => {
-          const id = `LOADING_${Date.now()}_${matchIndex++}`
-          placeholderMap.set(id, { originalUrl: url, originalAlt: alt })
-          return `![${t('editorPanel.reuploading')}](${id})`
-        })
-
-        view.dispatch(view.state.replaceSelection(previewText))
-
-        const uniqueUrls = [...new Set(matches.map(m => m[2]))]
-
-        Promise.all(uniqueUrls.map(async (url) => {
-          try {
-            const newUrl = enableImageReupload.value ? await upload(url) : url
-
-            for (const [id, info] of placeholderMap.entries()) {
-              if (info.originalUrl === url) {
-                const searchStr = `![${t('editorPanel.reuploading')}](${id})`
-                const currentDoc = view.state.doc.toString()
-                const pos = currentDoc.indexOf(searchStr)
-
-                if (pos !== -1) {
-                  const newText = `![${info.originalAlt}](${newUrl})`
-                  view.dispatch({
-                    changes: { from: pos, to: pos + searchStr.length, insert: newText },
-                  })
-                }
-              }
-            }
-          }
-          catch (e) {
-            console.error(`转存失败: ${url}`, e)
-            for (const [id, info] of placeholderMap.entries()) {
-              if (info.originalUrl === url) {
-                const searchStr = `![${t('editorPanel.reuploading')}](${id})`
-                const currentDoc = view.state.doc.toString()
-                const pos = currentDoc.indexOf(searchStr)
-
-                if (pos !== -1) {
-                  const newText = `![${info.originalAlt}](${info.originalUrl})`
-                  view.dispatch({
-                    changes: { from: pos, to: pos + searchStr.length, insert: newText },
-                  })
-                }
-              }
-            }
-            toast.error(t('editorPanel.reuploadFailed'))
-          }
-        })).finally(() => {
-          isImgLoading.value = false
-        })
-
-        return true
-      }
+      // Markdown text may contain image links; insert as-is.
+      // Per design, foreign image URLs are left untouched (not downloaded).
+      return false
     }
     return false
   }
@@ -679,10 +576,6 @@ defineExpose({
       :filtered-commands="slashFilteredCommands"
       @execute="(cmd) => codeMirrorView && executeSlashCommand(codeMirrorView, cmd)"
       @close="closeSlashMenu()"
-    />
-    <SidebarAIToolbar
-      :is-mobile="isMobile"
-      :show-editor="showEditor"
     />
 
     <EditorContextMenu>

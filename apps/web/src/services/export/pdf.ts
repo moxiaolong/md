@@ -41,7 +41,7 @@ const MARGIN_VALUES: Record<PdfMargins, string> = {
 const CHROME_CONTENT_GAP = `0.5cm`
 
 /** Fallback when the app is not served over http(s) (extension / file). */
-export const PDF_SITE_FOOTER_FALLBACK_URL = `https://md.doocs.org`
+export const PDF_SITE_FOOTER_FALLBACK_URL = `https://github.com/doocs/md`
 
 /** Prefer the current http(s) origin; fall back for extension / file contexts. */
 export function resolvePdfSiteFooterUrl(

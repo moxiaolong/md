@@ -18,14 +18,10 @@ import StyleDropdown from './StyleDropdown.vue'
 const emit = defineEmits([`startCopy`, `endCopy`])
 const { t } = useI18n()
 const AboutDialog = defineAsyncComponent(() => import('./AboutDialog.vue'))
-const FundDialog = defineAsyncComponent(() => import('./FundDialog.vue'))
 const EditorStateDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/EditorStateDialog.vue'))
 const PreferencesDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/PreferencesDialog.vue'))
 const MarkdownHelpDialog = defineAsyncComponent(() => import('./MarkdownHelpDialog.vue'))
 const KeyboardShortcutsDialog = defineAsyncComponent(() => import('./KeyboardShortcutsDialog.vue'))
-const AccountDialog = defineAsyncComponent(() => import('./AccountDialog.vue'))
-const SyncDialog = defineAsyncComponent(() => import('./SyncDialog.vue'))
-const ShareDialog = defineAsyncComponent(() => import('./ShareDialog.vue'))
 const PdfExportDialog = defineAsyncComponent(() => import('@/components/editor/dialogs/PdfExportDialog.vue'))
 
 const editorStore = useEditorStore()
@@ -38,7 +34,7 @@ const { editorRefresh } = useEditorRefresh()
 const { editor } = storeToRefs(editorStore)
 const { output } = storeToRefs(renderStore)
 const { primaryColor } = storeToRefs(themeStore)
-const { isOpenRightSlider, isShowSyncDialog, isShowAccountDialog, isShowShareDialog, isShowPdfExportDialog, isShowAboutDialog, isShowFundDialog, isShowEditorStateDialog, isShowPreferencesDialog, isShowMarkdownHelpDialog, isShowKeyboardShortcutsDialog, copyMode } = storeToRefs(uiStore)
+const { isOpenRightSlider, isShowPdfExportDialog, isShowAboutDialog, isShowEditorStateDialog, isShowPreferencesDialog, isShowMarkdownHelpDialog, isShowKeyboardShortcutsDialog, copyMode } = storeToRefs(uiStore)
 
 const isCopying = ref(false)
 
@@ -287,14 +283,10 @@ function copyToWeChat() {
   </header>
 
   <AboutDialog v-if="isShowAboutDialog" v-model:open="isShowAboutDialog" />
-  <FundDialog v-if="isShowFundDialog" v-model:open="isShowFundDialog" />
   <EditorStateDialog v-if="isShowEditorStateDialog" v-model:open="isShowEditorStateDialog" />
   <PreferencesDialog v-model:open="isShowPreferencesDialog" />
   <MarkdownHelpDialog v-if="isShowMarkdownHelpDialog" v-model:open="isShowMarkdownHelpDialog" />
   <KeyboardShortcutsDialog v-if="isShowKeyboardShortcutsDialog" v-model:open="isShowKeyboardShortcutsDialog" />
-  <AccountDialog v-if="isShowAccountDialog" v-model:open="isShowAccountDialog" />
-  <SyncDialog v-if="isShowSyncDialog" v-model:open="isShowSyncDialog" />
-  <ShareDialog v-if="isShowShareDialog" v-model:open="isShowShareDialog" />
   <PdfExportDialog v-if="isShowPdfExportDialog" v-model:open="isShowPdfExportDialog" />
 </template>
 

@@ -8,7 +8,7 @@ export default {
     tabCreate: `生成分享`,
     tabManage: `我的分享`,
     expiresIn1Day: `1 天后过期`,
-    limitPerDay: `2 次/天`,
+    limitPerDay: `2 �?天`,
     expiresLabel: `链接有效期`,
     expiresMode: {
       '1d': `1 天`,
@@ -24,7 +24,7 @@ export default {
       },
       custom: {
         label: `自定义密码`,
-        description: `自行设置 4–64 位访问密码`,
+        description: `自行设置 4�?4 位访问密码`,
       },
       auto: {
         label: `随机密码`,
@@ -32,7 +32,7 @@ export default {
       },
     },
     customPasswordLabel: `输入访问密码`,
-    customPasswordPlaceholder: `4–64 个字符`,
+    customPasswordPlaceholder: `4�?4 个字符`,
     generateLink: `生成分享链接`,
     generating: `正在生成…`,
     stageRendering: `正在等待图表与公式渲染…`,
@@ -59,7 +59,7 @@ export default {
     openPreview: `打开预览`,
     revokeShare: `取消分享`,
     untitled: `无标题`,
-    proRequired: `我的分享为 Pro 专属功能`,
+    proRequired: `我的分享�?Pro 专属功能`,
     loadListFailed: `加载分享列表失败：{message}`,
     revokeTitle: `取消分享`,
     revokeDescription: `确定取消「{title}」的分享吗？链接将立即失效。`,
@@ -69,9 +69,9 @@ export default {
     linkUpdated: `分享链接已更新`,
     linkCreated: `分享链接已生成`,
     createFailed: `生成分享链接失败：{message}`,
-    invalidPassword: `密码长度需为 4–64 个字符。`,
+    invalidPassword: `密码长度需�?4�?4 个字符。`,
     forbidden: `无权更新此分享，请刷新后重试。`,
-    rateLimited: `每天最多分享 {limit} 次`,
+    rateLimited: `每天最多分�?{limit} 次`,
     rateLimitedGeneric: `分享过于频繁`,
     retryAfterHours: `，请 {hours} 小时后再试`,
     retryAfterMinutes: `，请 {minutes} 分钟后再试`,
@@ -109,19 +109,11 @@ export default {
   },
   about: {
     title: `关于`,
-    description: `一款高度简洁的微信 Markdown 编辑器`,
-    followHint: `扫码关注公众号 Doocs，原创技术内容第一时间推送！`,
-    imageAlt: `Doocs Markdown 编辑器`,
-  },
-  fund: {
-    title: `赞赏`,
-    description: `若觉得项目不错，可以通过以下方式支持我们～`,
-    qrAlt1: `赞赏二维码 1`,
-    qrAlt2: `赞赏二维码 2`,
+    description: `本项目 fork 自 https://github.com/doocs/md.git，目的是 SoulStation 服务号排版自用，请支持原作者。`,
   },
   markdownHelp: {
     title: `Markdown 语法帮助`,
-    description: `查看支持的 Markdown 语法，点击语法可直接复制`,
+    description: `查看支持�?Markdown 语法，点击语法可直接复制`,
     clickToCopy: `点击复制`,
     tabs: {
       basic: `基础语法`,
@@ -137,15 +129,15 @@ export default {
         { name: `斜体`, syntax: `*斜体文本*`, example: `斜体文本` },
         { name: `删除线`, syntax: `~~删除线~~`, example: `删除线` },
         { name: `高亮`, syntax: `==高亮文本==`, example: `高亮文本` },
-        { name: `下划线`, syntax: `++下划线++`, example: `下划线` },
+        { name: `下划线`, syntax: `++下划�?+`, example: `下划线` },
         { name: `行内代码`, syntax: `\`代码\``, example: `代码` },
-        { name: `无序列表`, syntax: `- 项目 1\n- 项目 2\n  - 嵌套项目`, tip: `使用 -、* 或 + 加空格` },
+        { name: `无序列表`, syntax: `- 项目 1\n- 项目 2\n  - 嵌套项目`, tip: `使用 -�? �?+ 加空格` },
         { name: `有序列表`, syntax: `1. 项目 1\n2. 项目 2`, tip: `数字加点号` },
         { name: `链接`, syntax: `[显示文本](链接地址)`, example: `Doocs`, tip: `微信公众号不支持外链跳转` },
         { name: `图片`, syntax: `![描述](图片地址)`, tip: `支持网络图片地址` },
         { name: `引用`, syntax: `> 引用内容\n>> 嵌套引用` },
-        { name: `分割线`, syntax: `---`, tip: `三个或更多 -、* 或 _` },
-        { name: `表格`, syntax: `| 列1 | 列2 |\n| --- | --- |\n| 内容1 | 内容2 |`, tip: `点击「编辑 > 插入表格」快速创建` },
+        { name: `分割线`, syntax: `---`, tip: `三个或更�?-�? �?_` },
+        { name: `表格`, syntax: `| �? | �? |\n| --- | --- |\n| 内容1 | 内容2 |`, tip: `点击「编�?> 插入表格」快速创建` },
       ],
       code: [
         { name: `基本代码块`, syntax: `\`\`\`\n代码内容\n\`\`\`` },
@@ -174,12 +166,7 @@ export default {
     title: `发布`,
     description: `将文章发布到多个平台`,
     extensionMissingTitle: `未检测到插件`,
-    extensionMissingDescription: `请安装 {link} 浏览器扩展`,
-    extensionLinkText: `COSE 文章同步助手`,
-    coseHint: `此功能由 {githubLink} 支持，完全本地运行，不收集、不存储任何用户信息。`,
-    coseGithubText: `GitHub 开源插件 COSE`,
-    coseContribute: `如需添加更多平台或改善同步准确度，欢迎提 {issueLink} 或 PR。`,
-    issueLinkText: `Issue`,
+    extensionMissingDescription: `请安装 COSE 文章同步助手 浏览器扩展`,
     cover: `封面`,
     coverPlaceholder: `自动提取第一张图`,
     titleLabel: `标题`,
@@ -239,14 +226,6 @@ export default {
       label: `同步滚动`,
       hint: `编辑区与预览区滚动联动`,
     },
-    showAIToolbox: {
-      label: `AI 工具箱`,
-      hint: `选中文本时显示浮动 AI 工具`,
-    },
-    imageReupload: {
-      label: `图片转存`,
-      hint: `复制时自动将图片转存到图床`,
-    },
     wordCount: {
       label: `字数统计`,
       hint: `在预览文章顶部显示字数与阅读时间`,
@@ -254,14 +233,14 @@ export default {
   },
   pdfExport: {
     title: `导出 PDF`,
-    description: `配置页眉页脚与版式后，通过浏览器打印对话框另存为 PDF。关闭的项会用空白占位，避免浏览器填入默认页眉页脚。`,
+    description: `配置页眉页脚与版式后，通过浏览器打印对话框另存�?PDF。关闭的项会用空白占位，避免浏览器填入默认页眉页脚。`,
     pageNumbers: {
       label: `页码`,
       hint: `在页脚显示页码`,
     },
     pageNumberFormat: {
       label: `页码格式`,
-      nOfM: `第 N 页，共 M 页`,
+      nOfM: `�?N 页，�?M 页`,
       n: `仅页码`,
     },
     pageNumberPosition: {
@@ -276,7 +255,7 @@ export default {
     },
     siteFooter: {
       label: `页脚站点`,
-      hint: `在页脚显示 {url}`,
+      hint: `在页脚显�?{url}`,
     },
     margins: {
       label: `页边距`,
@@ -284,6 +263,6 @@ export default {
       default: `默认`,
       comfortable: `宽松`,
     },
-    export: `打印 / 另存为 PDF`,
+    export: `打印 / 另存�?PDF`,
   },
 }

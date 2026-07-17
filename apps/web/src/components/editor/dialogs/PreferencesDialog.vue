@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { AppLocale } from '@/i18n/types'
 import { Settings } from '@lucide/vue'
 import PanelDialog from '@/components/shared/panel-dialog/PanelDialog.vue'
 import PanelSelect from '@/components/shared/panel-dialog/PanelSelect.vue'
@@ -7,8 +6,6 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEditorRefresh } from '@/composables/useEditorRefresh'
-import { LOCALE_OPTIONS, SUPPORTED_LOCALES } from '@/i18n/constants'
-import { useLocaleStore } from '@/stores/locale'
 import { useThemeStore } from '@/stores/theme'
 import { useUIStore } from '@/stores/ui'
 
@@ -21,7 +18,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const localeStore = useLocaleStore()
 const uiStore = useUIStore()
 const themeStore = useThemeStore()
 const { editorRefresh } = useEditorRefresh()
@@ -33,10 +29,8 @@ const dialogOpen = computed({
 
 const {
   isDark,
-  showAIToolbox,
   viewMode,
   previewDevice,
-  enableImageReupload,
   enableScrollSync,
 } = storeToRefs(uiStore)
 
@@ -60,21 +54,9 @@ const previewDeviceOptions = computed(() => [
   { value: `mobile`, label: t(`preferences.previewDeviceOption.mobile`) },
 ] as const)
 
-const localeOptions = computed(() =>
-  LOCALE_OPTIONS.map(option => ({
-    value: option.value,
-    label: t(option.labelKey),
-  })),
-)
-
 function setCountStatus(value: boolean) {
   isCountStatus.value = value
   editorRefresh()
-}
-
-function onLocaleChange(value: string) {
-  if ((SUPPORTED_LOCALES as readonly string[]).includes(value))
-    void localeStore.setLocale(value as AppLocale)
 }
 </script>
 
@@ -100,20 +82,6 @@ function onLocaleChange(value: string) {
       </TabsList>
 
       <TabsContent value="general" class="mt-4 space-y-1">
-        <div class="flex items-center justify-between gap-4 border-b py-3">
-          <div class="min-w-0 space-y-0.5">
-            <Label>{{ t('preferences.language.label') }}</Label>
-            <p class="text-xs text-muted-foreground">
-              {{ t('preferences.language.hint') }}
-            </p>
-          </div>
-          <PanelSelect
-            :model-value="localeStore.locale"
-            :options="localeOptions"
-            @update:model-value="onLocaleChange"
-          />
-        </div>
-
         <div class="flex items-center justify-between gap-4 py-3">
           <div class="min-w-0 space-y-0.5">
             <Label for="pref-dark-mode">{{ t('preferences.darkMode.label') }}</Label>
@@ -151,36 +119,6 @@ function onLocaleChange(value: string) {
             class="shrink-0"
             :model-value="enableScrollSync"
             @update:model-value="enableScrollSync = $event"
-          />
-        </div>
-
-        <div class="flex items-center justify-between gap-4 border-b py-3">
-          <div class="min-w-0 space-y-0.5">
-            <Label for="pref-ai-toolbox">{{ t('preferences.showAIToolbox.label') }}</Label>
-            <p class="text-xs text-muted-foreground">
-              {{ t('preferences.showAIToolbox.hint') }}
-            </p>
-          </div>
-          <Switch
-            id="pref-ai-toolbox"
-            class="shrink-0"
-            :model-value="showAIToolbox"
-            @update:model-value="showAIToolbox = $event"
-          />
-        </div>
-
-        <div class="flex items-center justify-between gap-4 py-3">
-          <div class="min-w-0 space-y-0.5">
-            <Label for="pref-image-reupload">{{ t('preferences.imageReupload.label') }}</Label>
-            <p class="text-xs text-muted-foreground">
-              {{ t('preferences.imageReupload.hint') }}
-            </p>
-          </div>
-          <Switch
-            id="pref-image-reupload"
-            class="shrink-0"
-            :model-value="enableImageReupload"
-            @update:model-value="enableImageReupload = $event"
           />
         </div>
       </TabsContent>

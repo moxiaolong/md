@@ -1,31 +1,10 @@
 import { toBase64 } from '@md/shared/utils/fileHelpers'
 import { ref } from 'vue'
 import { t } from '@/i18n/translate'
-import { fileUpload } from '@/services/upload'
-import { store } from '@/storage'
-
-const STORAGE_KEY = `uploaded_image_map`
 
 export function useImageUploader() {
   const isUploading = ref(false)
   const error = ref<string | null>(null)
-
-  const getStorageMap = async (): Promise<Record<string, string>> => {
-    return (await store.getJSON<Record<string, string>>(STORAGE_KEY, {})) ?? {}
-  }
-
-  const updateStorageMap = async (hash: string, url: string) => {
-    const map = await getStorageMap()
-    map[hash] = url
-    await store.setJSON(STORAGE_KEY, map)
-  }
-
-  // SHA-256 for Blob/File via Web Crypto (replaces spark-md5)
-  const calculateHash = async (file: Blob): Promise<string> => {
-    const buffer = await file.arrayBuffer()
-    const digest = await crypto.subtle.digest(`SHA-256`, buffer)
-    return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, `0`)).join(``)
-  }
 
   // URL → File (watch CORS)
   const urlToFile = async (url: string): Promise<File> => {
@@ -78,20 +57,8 @@ export function useImageUploader() {
         file = resource
       }
 
-      const hash = await calculateHash(file)
-
-      const cache = await getStorageMap()
-      if (cache[hash])
-        return cache[hash]
-
       const base64Content = await toBase64(file)
-
-      const url = await fileUpload(base64Content, file)
-
-      if (url)
-        await updateStorageMap(hash, url)
-
-      return url
+      return base64Content
     }
     catch (err: any) {
       console.error(err)
@@ -104,5 +71,5 @@ export function useImageUploader() {
     }
   }
 
-  return { upload, isUploading, error }
+  return { upload, isUploading, error, urlToFile }
 }

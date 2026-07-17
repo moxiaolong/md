@@ -11,25 +11,20 @@ export const DEFAULT_LOCALE: AppLocale = `zh-CN`
  */
 export const CONTENT_FONT_LANG = `und` as const
 
-export const SUPPORTED_LOCALES: AppLocale[] = [`zh-CN`, `zh-TW`, `en-US`, `ja-JP`]
+export const SUPPORTED_LOCALES: AppLocale[] = [`zh-CN`]
 
 export const LOCALE_OPTIONS: LocaleOption[] = [
   { value: `zh-CN`, labelKey: `locale.zhCN`, shortLabel: `简` },
-  { value: `zh-TW`, labelKey: `locale.zhTW`, shortLabel: `繁` },
-  { value: `en-US`, labelKey: `locale.enUS`, shortLabel: `EN` },
-  { value: `ja-JP`, labelKey: `locale.jaJP`, shortLabel: `日` },
 ]
 
-export function getNextLocale(current: AppLocale): AppLocale {
-  const index = SUPPORTED_LOCALES.indexOf(current)
-  const nextIndex = index < 0 ? 0 : (index + 1) % SUPPORTED_LOCALES.length
-  return SUPPORTED_LOCALES[nextIndex]!
+export function getNextLocale(_current: AppLocale): AppLocale {
+  return `zh-CN`
 }
 
-export function getLocaleOption(locale: AppLocale): LocaleOption {
-  return LOCALE_OPTIONS.find(option => option.value === locale) ?? LOCALE_OPTIONS[0]!
+export function getLocaleOption(_locale: AppLocale): LocaleOption {
+  return LOCALE_OPTIONS[0]!
 }
 
 export function isAppLocale(value: string | null | undefined): value is AppLocale {
-  return !!value && (SUPPORTED_LOCALES as readonly string[]).includes(value)
+  return value === `zh-CN`
 }

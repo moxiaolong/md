@@ -116,9 +116,4 @@ export default {
   extension: {
     editorTitle: `MD 公众号编辑器`,
   },
-  afdian: {
-    monthly: `月付`,
-    quarterly: `季付`,
-    yearly: `年付`,
-  },
 }

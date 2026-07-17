@@ -11,7 +11,6 @@ const uiStore = useUIStore()
 const { isDark } = storeToRefs(uiStore)
 
 usePlatformEnv()
-useAccountSyncBootstrap()
 useDeepLinkImport()
 useCommandPaletteHotkey()
 usePreferencesHotkey()

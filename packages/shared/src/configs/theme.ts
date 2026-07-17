@@ -10,6 +10,11 @@ export {
 } from './theme-css'
 
 export const themeOptionsMap = {
+  soulstation: {
+    label: `SoulStation`,
+    value: `soulstation`,
+    desc: ``,
+  },
   default: {
     label: `经典`,
     value: `default`,
@@ -28,6 +33,11 @@ export const themeOptionsMap = {
 }
 
 export const themeOptions: IConfigOption<ThemeName>[] = [
+  {
+    label: `SoulStation`,
+    value: `soulstation`,
+    desc: ``,
+  },
   {
     label: `经典`,
     value: `default`,

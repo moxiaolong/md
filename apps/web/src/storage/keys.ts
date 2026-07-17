@@ -23,20 +23,11 @@ export const UNPREFIXED_APP_KEYS = new Set([
   `isCountStatus`,
   `legend`,
   `previewWidth`,
-  `showAIToolbox`,
   `viewMode`,
   `previewDevice`,
   `locale`,
-  `openai_type`,
-  `openai_temperature`,
-  `openai_max_token`,
-  `quick_commands`,
-  `imgHost`,
-  `useCompression`,
   `isShowCssEditor`,
-  `hasShownAIToolboxHint`,
   `isMobile`,
-  `formCustomConfig`,
 ])
 
 /** Document-related settings keys (IDB settings only, not the documents table) */
@@ -49,24 +40,14 @@ export const LEGACY_POSTS_KEY = addPrefix(`posts`)
 const SECRET_SUFFIXES = [`Config`] as const
 
 const SECRET_PREFIXES = [
-  `openai_key_`,
-  `openai_model_`,
-  `openai_image_key_`,
-  `openai_image_endpoint_`,
-  `openai_image_model_`,
   `mpToken:`,
 ] as const
 
 const CACHE_EXACT_KEYS = new Set([
   `uploaded_image_map`,
-  `ai_generated_images`,
-  `ai_image_timestamps`,
-  `ai_image_prompts`,
-  `ai_memory_context`,
-  `ai_conversation_list`,
 ])
 
-const CACHE_PREFIXES = [`ai_conversation_`] as const
+const CACHE_PREFIXES = [] as const
 
 /** Image host / AI secret configuration keys */
 export function isSecretKey(key: string): boolean {
@@ -115,6 +96,3 @@ export const KEY_MP_PROFILE_MIGRATED = addPrefix(`mp_profile_migrated`)
 
 /** Max entries in image hash cache */
 export const MAX_IMAGE_MAP_ENTRIES = 500
-
-/** Max entries in AI-generated image cache */
-export const MAX_AI_IMAGE_ENTRIES = 50

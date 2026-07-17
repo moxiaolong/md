@@ -63,7 +63,6 @@ function getAllStoreStates() {
     isDark: uiStore.isDark,
     isOpenRightSlider: uiStore.isOpenRightSlider,
     isOpenPostSlider: uiStore.isOpenPostSlider,
-    showAIToolbox: uiStore.showAIToolbox,
 
     theme: themeStore.theme,
     fontFamily: themeStore.fontFamily,
@@ -90,8 +89,6 @@ function getAllStoreStates() {
     isShowCssEditor: uiStore.isShowCssEditor,
     isShowInsertFormDialog: uiStore.isShowInsertFormDialog,
     isShowUploadImgDialog: uiStore.isShowUploadImgDialog,
-    aiDialogVisible: uiStore.aiDialogVisible,
-    aiImageDialogVisible: uiStore.aiImageDialogVisible,
   }
 }
 
@@ -254,8 +251,6 @@ function applyImportedConfig() {
         uiStore.isOpenRightSlider = value
       else if (key === `isOpenPostSlider`)
         uiStore.isOpenPostSlider = value
-      else if (key === `showAIToolbox`)
-        uiStore.showAIToolbox = value
 
       else if (key === `theme`)
         themeStore.theme = value
@@ -303,10 +298,6 @@ function applyImportedConfig() {
         uiStore.isShowInsertFormDialog = value
       else if (key === `isShowUploadImgDialog`)
         uiStore.isShowUploadImgDialog = value
-      else if (key === `aiDialogVisible`)
-        uiStore.aiDialogVisible = value
-      else if (key === `aiImageDialogVisible`)
-        uiStore.aiImageDialogVisible = value
     }
   })
 

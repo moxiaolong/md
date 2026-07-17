@@ -323,28 +323,7 @@ onBeforeMount(() => {
             <Info class="h-4 w-4" />
             <AlertTitle>{{ t('postInfo.extensionMissingTitle') }}</AlertTitle>
             <AlertDescription>
-              <i18n-t keypath="postInfo.extensionMissingDescription" tag="span">
-                <template #link>
-                  <a href="https://chromewebstore.google.com/detail/ilhikcdphhpjofhlnbojifbihhfmmhfk" target="_blank" rel="noopener noreferrer" class="underline text-primary">{{ t('postInfo.extensionLinkText') }}</a>
-                </template>
-              </i18n-t>
-            </AlertDescription>
-          </Alert>
-
-          <Alert>
-            <Info class="h-4 w-4" />
-            <AlertDescription>
-              <i18n-t keypath="postInfo.coseHint" tag="span">
-                <template #githubLink>
-                  <a href="https://github.com/doocs/cose" target="_blank" rel="noopener noreferrer" class="underline">{{ t('postInfo.coseGithubText') }}</a>
-                </template>
-              </i18n-t>
-              <br>
-              <i18n-t keypath="postInfo.coseContribute" tag="span">
-                <template #issueLink>
-                  <a href="https://github.com/doocs/cose/issues" target="_blank" rel="noopener noreferrer" class="underline">{{ t('postInfo.issueLinkText') }}</a>
-                </template>
-              </i18n-t>
+              {{ t('postInfo.extensionMissingDescription') }}
             </AlertDescription>
           </Alert>
 

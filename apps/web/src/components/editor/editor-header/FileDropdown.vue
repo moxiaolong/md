@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { Cloud, Download, FileCode, FileCog, FileText, FolderKanban, FolderOpen, Package, Settings, Share2, Upload } from '@lucide/vue'
-import { isShareUiEnabled } from '@/services/share/client'
-import { isSyncUiEnabled } from '@/services/sync/client'
+import { Download, FileCode, FileCog, FileText, FolderKanban, FolderOpen, Package, Settings, Upload } from '@lucide/vue'
 import { useEditorStore } from '@/stores/editor'
 import { useExportStore } from '@/stores/export'
 import { useUIStore } from '@/stores/ui'
@@ -20,9 +18,7 @@ const exportStore = useExportStore()
 const uiStore = useUIStore()
 
 const { isOpenPostSlider, isOpenFolderPanel } = storeToRefs(uiStore)
-const { toggleShowTemplateDialog, toggleShowImportMdDialog, toggleShowSyncDialog, toggleShowEditorStateDialog, toggleShowPreferencesDialog, openShareDialog, openPdfExportDialog } = uiStore
-const showSyncUi = isSyncUiEnabled()
-const showShareUi = isShareUiEnabled()
+const { toggleShowTemplateDialog, toggleShowImportMdDialog, toggleShowEditorStateDialog, toggleShowPreferencesDialog, openPdfExportDialog } = uiStore
 
 function openEditorStateDialog() {
   toggleShowEditorStateDialog(true)
@@ -126,18 +122,6 @@ function exportEditorContent2PDF() {
         {{ t('menu.contentManage') }}
       </MenubarItem>
 
-      <template v-if="showSyncUi || showShareUi">
-        <MenubarSeparator />
-        <MenubarItem v-if="showSyncUi" @click="toggleShowSyncDialog(true)">
-          <Cloud class="mr-2 size-4" />
-          {{ t('menu.cloudSync') }}
-        </MenubarItem>
-        <MenubarItem v-if="showShareUi" @click="openShareDialog()">
-          <Share2 class="mr-2 size-4" />
-          {{ t('menu.sharePreview') }}
-        </MenubarItem>
-      </template>
-
       <MenubarSeparator />
 
       <MenubarItem @click="openPreferencesDialog()">
@@ -219,18 +203,6 @@ function exportEditorContent2PDF() {
         <FolderKanban class="mr-2 size-4" />
         {{ t('menu.contentManage') }}
       </MenubarItem>
-
-      <template v-if="showSyncUi || showShareUi">
-        <MenubarSeparator />
-        <MenubarItem v-if="showSyncUi" @click="toggleShowSyncDialog(true)">
-          <Cloud class="mr-2 size-4" />
-          {{ t('menu.cloudSync') }}
-        </MenubarItem>
-        <MenubarItem v-if="showShareUi" @click="openShareDialog()">
-          <Share2 class="mr-2 size-4" />
-          {{ t('menu.sharePreview') }}
-        </MenubarItem>
-      </template>
 
       <MenubarSeparator />
 

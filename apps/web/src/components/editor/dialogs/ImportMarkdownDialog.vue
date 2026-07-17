@@ -12,71 +12,18 @@ const { isShowImportMdDialog } = storeToRefs(uiStore)
 const activeTab = ref<'url' | 'file'>(`file`)
 
 /**
- * Detect local image paths in Markdown content
- * Exclude http/https URLs, data URIs, and empty paths
- */
-function detectLocalImagePaths(content: string): string[] {
-  const regex = /!\[[^\]]*\]\((?!https?:\/\/|data:)([^)]+)\)/g
-  const paths = new Set<string>()
-  let match = regex.exec(content)
-  while (match != null) {
-    const path = match[1]!.trim()
-    if (path) {
-      paths.add(path)
-    }
-    match = regex.exec(content)
-  }
-  return Array.from(paths)
-}
-
-/**
- * Import content; open upload dialog when local images are present
+ * Import content as-is; local image paths are left untouched
  */
 async function importContent(title: string, content: string) {
-  const localPaths = detectLocalImagePaths(content)
-  if (localPaths.length === 0) {
-    postStore.addPost(title)
-    postStore.updatePostContent(postStore.currentPostId, content)
-    closeDialog()
-    return
-  }
-
-  uiStore.localImageUploadData = {
-    markdownContent: content,
-    detectedPaths: localPaths,
-  }
-  uiStore.isShowLocalImageUpload = true
-
-  await new Promise<void>((resolve) => {
-    const unwatch = watch(
-      () => uiStore.localImageUploadData,
-      (data) => {
-        if (data && data.processed) {
-          unwatch()
-          if (data.skipUpload) {
-            postStore.addPost(title)
-            postStore.updatePostContent(postStore.currentPostId, content)
-          }
-          else {
-            postStore.addPost(title)
-            postStore.updatePostContent(postStore.currentPostId, data!.markdownContent)
-          }
-          closeDialog()
-          resolve()
-        }
-      },
-    )
-  })
-
-  uiStore.localImageUploadData = null
+  postStore.addPost(title)
+  postStore.updatePostContent(postStore.currentPostId, content)
+  closeDialog()
 }
 
 const url = ref(``)
 const isUrlLoading = ref(false)
 const urlError = ref(``)
 let abortController: AbortController | null = null
-
-const ANYTHING_MD_API = `https://anything-md.doocs.org/`
 
 /** Whether the URL points directly to a Markdown file */
 function isMarkdownUrl(rawUrl: string): boolean {
@@ -102,34 +49,6 @@ async function fetchMarkdownFile(rawUrl: string, signal: AbortSignal): Promise<s
   return content
 }
 
-/** Convert web page to Markdown via Anything-MD */
-async function fetchViaAnythingMd(rawUrl: string, signal: AbortSignal): Promise<string> {
-  const response = await fetch(ANYTHING_MD_API, {
-    method: `POST`,
-    headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify({ url: rawUrl }),
-    signal,
-  })
-
-  if (!response.ok) {
-    throw new Error(t('importMd.requestFailed', { status: response.status, statusText: response.statusText }))
-  }
-
-  const data = await response.json()
-  if (signal.aborted)
-    throw new DOMException(``, `AbortError`)
-
-  if (!data.success) {
-    throw new Error(data.error || t('importMd.convertFailed'))
-  }
-
-  const markdown = data.markdown?.trim()
-  if (!markdown) {
-    throw new Error(t('importMd.convertResultEmpty'))
-  }
-  return markdown
-}
-
 async function importFromUrl() {
   const rawUrl = url.value.trim()
   if (!rawUrl) {
@@ -149,9 +68,11 @@ async function importFromUrl() {
   const { signal } = abortController
 
   try {
-    const content = isMarkdownUrl(rawUrl)
-      ? await fetchMarkdownFile(rawUrl, signal)
-      : await fetchViaAnythingMd(rawUrl, signal)
+    if (!isMarkdownUrl(rawUrl)) {
+      urlError.value = t('importMd.urlInvalid')
+      return
+    }
+    const content = await fetchMarkdownFile(rawUrl, signal)
 
     const urlTitle = (() => {
       try {
@@ -339,15 +260,6 @@ watch(isShowImportMdDialog, (visible) => {
               <Loader2 v-if="isUrlLoading" class="mr-2 size-4 animate-spin" />
               {{ isUrlLoading ? t('importMd.importing') : t('common.import') }}
             </Button>
-            <p class="text-center text-xs text-muted-foreground/60">
-              {{ t('importMd.poweredBy') }}
-              <a
-                href="https://github.com/doocs/anything-md"
-                target="_blank" rel="noopener noreferrer"
-                class="underline hover:text-muted-foreground"
-              >Anything-MD</a>
-              {{ t('importMd.conversionService') }}
-            </p>
           </div>
         </TabsContent>
       </Tabs>

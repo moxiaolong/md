@@ -2,11 +2,7 @@ import type { EditorView } from '@codemirror/view'
 import { ctrlSign, shiftSign } from '@md/shared/configs'
 import { useEditorDocumentActions } from '@/composables/useEditorDocumentActions'
 import { t } from '@/i18n/translate'
-import { isAccountUiEnabled } from '@/services/account/config'
-import { isShareUiEnabled } from '@/services/share/client'
-import { isSyncUiEnabled } from '@/services/sync/client'
 import { useEditorStore } from '@/stores/editor'
-import { useLocaleStore } from '@/stores/locale'
 import { useUIStore } from '@/stores/ui'
 
 export interface PaletteCommand {
@@ -21,7 +17,6 @@ export interface PaletteCommand {
 export function useCommandPalette() {
   const uiStore = useUIStore()
   const editorStore = useEditorStore()
-  const localeStore = useLocaleStore()
   const { formatContent } = useEditorDocumentActions()
 
   function withEditor(run: (view: EditorView) => void | Promise<void>) {
@@ -88,13 +83,6 @@ export function useCommandPalette() {
         group: t(`commandPalette.group.view`),
         keywords: [`深色`, `浅色`, `主题`, `dark`, `light`, `theme`],
         action: () => { uiStore.toggleDark() },
-      },
-      {
-        id: `toggle-language`,
-        label: t(`commandPalette.toggleLanguage`),
-        group: t(`commandPalette.group.settings`),
-        keywords: [`语言`, `中文`, `英文`, `language`, `locale`, `english`, `chinese`],
-        action: () => { void localeStore.cycleLocale() },
       },
       {
         id: `toggle-style-panel`,
@@ -210,36 +198,6 @@ export function useCommandPalette() {
         action: () => { uiStore.toggleShowComponentDialog(true) },
       },
     ]
-
-    if (isAccountUiEnabled()) {
-      commands.push({
-        id: `open-account`,
-        label: t(`common.account`),
-        group: t(`commandPalette.group.cloud`),
-        keywords: [`账户`, `登录`, `account`, `login`],
-        action: () => { uiStore.toggleShowAccountDialog(true) },
-      })
-    }
-
-    if (isSyncUiEnabled()) {
-      commands.push({
-        id: `open-sync`,
-        label: t(`menu.cloudSync`),
-        group: t(`commandPalette.group.cloud`),
-        keywords: [`同步`, `云`, `sync`, `cloud`],
-        action: () => { uiStore.toggleShowSyncDialog(true) },
-      })
-    }
-
-    if (isShareUiEnabled()) {
-      commands.push({
-        id: `open-share`,
-        label: t(`menu.sharePreview`),
-        group: t(`commandPalette.group.cloud`),
-        keywords: [`分享`, `share`, `预览`],
-        action: () => uiStore.openShareDialog(),
-      })
-    }
 
     return commands
   }

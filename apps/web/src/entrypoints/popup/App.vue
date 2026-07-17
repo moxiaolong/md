@@ -35,7 +35,7 @@ function onOpenOption() {
         >{{ t('store.popup.viewDocs') }}</a></span>
       </div>
       <div>
-        {{ t('store.popup.step2') }}<span><a href="https://md-pages.doocs.org/tutorial" target="_blank" rel="noopener noreferrer">{{ t('store.popup.tutorial') }}</a></span>
+        {{ t('store.popup.step2') }}<span>{{ t('store.popup.tutorial') }}</span>
       </div>
       <div>
         <button class="button" @click="onOpenOption">

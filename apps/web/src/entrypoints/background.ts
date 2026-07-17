@@ -1,20 +1,5 @@
 import { browser, defineBackground } from '#imports'
-import { detectInitialLocale } from '@/i18n/detect'
-import enUS from '@/i18n/messages/en-US/store'
-import jaJP from '@/i18n/messages/ja-JP/store'
 import zhCN from '@/i18n/messages/zh-CN/store'
-import zhTW from '@/i18n/messages/zh-TW/store'
-
-const EXTENSION_TITLE_BY_LOCALE = {
-  'zh-CN': zhCN.extension.editorTitle,
-  'zh-TW': zhTW.extension.editorTitle,
-  'en-US': enUS.extension.editorTitle,
-  'ja-JP': jaJP.extension.editorTitle,
-} as const
-
-function getExtensionTitle(): string {
-  return EXTENSION_TITLE_BY_LOCALE[detectInitialLocale()]
-}
 
 export default defineBackground({
   type: `module`,
@@ -25,7 +10,7 @@ export default defineBackground({
         return
       }
       if (detail.reason === `install`) {
-        browser.tabs.create({ url: `https://md-pages.doocs.org/welcome` })
+        browser.runtime.openOptionsPage()
       }
       else if (detail.reason === `update`) {
         browser.runtime.openOptionsPage()
@@ -37,7 +22,7 @@ export default defineBackground({
         return
       browser.contextMenus.create({
         id: `openSidePanel`,
-        title: getExtensionTitle(),
+        title: zhCN.extension.editorTitle,
         documentUrlPatterns: [`https://mp.weixin.qq.com/cgi-bin/appmsg*`],
         contexts: [`all`],
       })

@@ -74,10 +74,6 @@ function themeChanged(newTheme: ThemeName) {
   scheduleEditorRefresh()
 }
 
-function openThemeMarketplace() {
-  uiStore.openMarketplaceDialog({ tab: `theme`, view: `discover` })
-}
-
 function fontChanged(fonts: string) {
   themeStore.fontFamily = fonts
 
@@ -255,14 +251,6 @@ const isColorCompact = computed(() => colorGridWidth.value > 0 && colorGridWidth
             {{ label }}
           </Button>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          class="h-8 w-full justify-start px-1.5 text-xs text-muted-foreground"
-          @click="openThemeMarketplace"
-        >
-          {{ t('marketplace.exploreThemes') }}
-        </Button>
       </div>
       <div class="space-y-2">
         <h2 class="text-sm font-medium">

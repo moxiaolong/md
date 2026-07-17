@@ -2,7 +2,7 @@
 import type { ThemeName } from '@md/shared/configs'
 import { Check, CheckSquare, CircleHelp, Download, Edit3, Ellipsis, Eye, Plus, X } from '@lucide/vue'
 import { exportMergedTheme } from '@md/core'
-import { getDefaultCustomTheme, isBuiltinThemeName, isMarketplaceThemeKey, themeMap } from '@md/shared'
+import { getDefaultCustomTheme, isBuiltinThemeName, themeMap } from '@md/shared'
 import { getThemeLabel } from '@/composables/useLocalizedStyleOptions'
 import { CONTENT_FONT_LANG } from '@/i18n/constants'
 import { getLocale } from '@/i18n/translate'
@@ -10,7 +10,6 @@ import { copyPlain } from '@/lib/browser/clipboard'
 import { useConfirmStore } from '@/stores/confirm'
 import { useCssEditorStore } from '@/stores/cssEditor'
 import { useEditorStore } from '@/stores/editor'
-import { useMarketplaceStore } from '@/stores/marketplace'
 import { useRenderStore } from '@/stores/render'
 import { useThemeStore } from '@/stores/theme'
 import { useUIStore } from '@/stores/ui'
@@ -320,11 +319,6 @@ function exportCurrentTheme() {
   }
   else if (isBuiltinThemeName(themeStore.theme)) {
     baseTheme = `${themeMap.default}\n\n${themeMap[themeStore.theme]}`
-  }
-  else if (isMarketplaceThemeKey(themeStore.theme)) {
-    const marketplaceCss = useMarketplaceStore().getInstalledThemeCss(themeStore.theme)
-    if (marketplaceCss)
-      baseTheme = `${themeMap.default}\n\n${marketplaceCss}`
   }
 
   exportMergedTheme(

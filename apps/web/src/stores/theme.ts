@@ -1,7 +1,6 @@
 import type { HeadingLevel, HeadingStyles, HeadingStyleType, PerThemeSettings, PerThemeSettingsMap, ThemeName } from '@md/shared/configs'
 import { applyTheme } from '@md/core'
 import { defaultPerThemeSettings, defaultStyleConfig, widthOptions } from '@md/shared/configs'
-import { isMarketplaceThemeKey } from '@md/shared/types'
 import { store } from '@/storage'
 import { addPrefix } from '@/storage/prefix'
 import { useCssEditorStore } from '@/stores/cssEditor'
@@ -132,16 +131,8 @@ export const useThemeStore = defineStore(`theme`, () => {
       const cssEditorStore = useCssEditorStore()
       const customCSS = cssEditorStore.getCurrentTabContent()
 
-      // Lazy import avoids Pinia circular init with marketplace store
-      let themeCSS: string | undefined
-      if (isMarketplaceThemeKey(theme.value)) {
-        const { useMarketplaceStore } = await import(`@/stores/marketplace`)
-        themeCSS = useMarketplaceStore().getInstalledThemeCss(theme.value)
-      }
-
       await applyTheme({
         themeName: theme.value,
-        themeCSS,
         customCSS,
         variables: {
           primaryColor: primaryColor.value,

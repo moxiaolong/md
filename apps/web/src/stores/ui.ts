@@ -8,11 +8,6 @@ export const useUIStore = defineStore(`ui`, () => {
   const isDark = useDark()
   const toggleDark = useToggle(isDark)
 
-  const showAIToolbox = store.reactive(`showAIToolbox`, true)
-  const toggleAIToolbox = useToggle(showAIToolbox)
-
-  const hasShownAIToolboxHint = store.reactive(`hasShownAIToolboxHint`, false)
-
   const isOpenRightSlider = store.reactive(addPrefix(`is_open_right_slider`), false)
 
   const isOpenPostSlider = store.reactive(addPrefix(`is_open_post_slider`), false)
@@ -38,9 +33,6 @@ export const useUIStore = defineStore(`ui`, () => {
   function togglePreviewDevice() {
     previewDevice.value = previewDevice.value === `desktop` ? `mobile` : `desktop`
   }
-
-  const enableImageReupload = store.reactive(addPrefix(`enableImageReupload`), false)
-  const toggleImageReupload = useToggle(enableImageReupload)
 
   const enableScrollSync = store.reactive(addPrefix(`enableScrollSync`), true)
   const toggleScrollSync = useToggle(enableScrollSync)
@@ -84,52 +76,11 @@ export const useUIStore = defineStore(`ui`, () => {
   /** URL from ?open= query; import dialog auto-imports when opened with this set. */
   const importMdOpenUrl = ref<string | null>(null)
 
-  const isShowLocalImageUpload = ref(false)
-  const toggleShowLocalImageUpload = useToggle(isShowLocalImageUpload)
-  /** Pending local image upload batch data. */
-  const localImageUploadData = ref<{
-    markdownContent: string
-    detectedPaths: string[]
-    processed?: boolean
-    skipUpload?: boolean
-    successCount?: number
-    failCount?: number
-  } | null>(null)
-
   const isShowTemplateDialog = ref(false)
   const toggleShowTemplateDialog = useToggle(isShowTemplateDialog)
 
   const isShowComponentDialog = ref(false)
   const toggleShowComponentDialog = useToggle(isShowComponentDialog)
-
-  const isShowMarketplaceDialog = ref(false)
-  const marketplaceDialogTab = ref<`theme` | `component`>(`theme`)
-  const marketplaceDialogView = ref<`discover` | `installed` | `mine` | `admin` | `publish`>(`discover`)
-
-  function openMarketplaceDialog(options?: {
-    tab?: `theme` | `component`
-    view?: `discover` | `installed` | `mine` | `admin` | `publish`
-  }) {
-    // Component marketplace UI is temporarily disabled; always open themes.
-    void options?.tab
-    marketplaceDialogTab.value = `theme`
-    marketplaceDialogView.value = options?.view ?? `discover`
-    isShowMarketplaceDialog.value = true
-  }
-
-  const isShowSyncDialog = ref(false)
-  const toggleShowSyncDialog = useToggle(isShowSyncDialog)
-
-  const isShowAccountDialog = ref(false)
-  const toggleShowAccountDialog = useToggle(isShowAccountDialog)
-
-  const isShowShareDialog = ref(false)
-  const shareDialogInitialTab = ref<`create` | `manage`>(`create`)
-
-  function openShareDialog(options?: { tab?: `create` | `manage` }) {
-    shareDialogInitialTab.value = options?.tab ?? `create`
-    isShowShareDialog.value = true
-  }
 
   const isShowPdfExportDialog = ref(false)
 
@@ -146,9 +97,6 @@ export const useUIStore = defineStore(`ui`, () => {
 
   const isShowAboutDialog = ref(false)
   const toggleShowAboutDialog = useToggle(isShowAboutDialog)
-
-  const isShowFundDialog = ref(false)
-  const toggleShowFundDialog = useToggle(isShowFundDialog)
 
   const isShowMarkdownHelpDialog = ref(false)
   const toggleShowMarkdownHelpDialog = useToggle(isShowMarkdownHelpDialog)
@@ -171,17 +119,6 @@ export const useUIStore = defineStore(`ui`, () => {
   function openComponentDialogWithTarget(target: string) {
     componentDialogTarget.value = target
     isShowComponentDialog.value = true
-  }
-
-  const aiDialogVisible = ref(false)
-  const aiImageDialogVisible = ref(false)
-
-  function toggleAIDialog(value?: boolean) {
-    aiDialogVisible.value = value ?? !aiDialogVisible.value
-  }
-
-  function toggleAIImageDialog(value?: boolean) {
-    aiImageDialogVisible.value = value ?? !aiImageDialogVisible.value
   }
 
   const searchTabRequest = ref<{ word: string, showReplace: boolean } | null>(null)
@@ -230,15 +167,12 @@ export const useUIStore = defineStore(`ui`, () => {
 
   return {
     isDark,
-    showAIToolbox,
-    hasShownAIToolboxHint,
     isOpenRightSlider,
     isOpenPostSlider,
     isMobile,
     viewMode,
     previewDevice,
     isOpenFolderPanel,
-    enableImageReupload,
     enableScrollSync,
     copyMode,
 
@@ -257,31 +191,15 @@ export const useUIStore = defineStore(`ui`, () => {
     isShowImportMdDialog,
     toggleShowImportMdDialog,
     importMdOpenUrl,
-    isShowLocalImageUpload,
-    toggleShowLocalImageUpload,
-    localImageUploadData,
     isShowTemplateDialog,
     toggleShowTemplateDialog,
     isShowComponentDialog,
     toggleShowComponentDialog,
-    isShowMarketplaceDialog,
-    marketplaceDialogTab,
-    marketplaceDialogView,
-    openMarketplaceDialog,
-    isShowSyncDialog,
-    toggleShowSyncDialog,
-    isShowAccountDialog,
-    toggleShowAccountDialog,
-    isShowShareDialog,
-    shareDialogInitialTab,
-    openShareDialog,
     isShowPdfExportDialog,
     openPdfExportDialog,
     pdfExportOptions,
     isShowAboutDialog,
     toggleShowAboutDialog,
-    isShowFundDialog,
-    toggleShowFundDialog,
     isShowMarkdownHelpDialog,
     toggleShowMarkdownHelpDialog,
     isShowEditorStateDialog,
@@ -294,10 +212,6 @@ export const useUIStore = defineStore(`ui`, () => {
     toggleShowCommandPalette,
     componentDialogTarget,
     openComponentDialogWithTarget,
-    aiDialogVisible,
-    toggleAIDialog,
-    aiImageDialogVisible,
-    toggleAIImageDialog,
 
     searchTabRequest,
     openSearchTab,
@@ -306,8 +220,6 @@ export const useUIStore = defineStore(`ui`, () => {
     requestGoToLine,
 
     toggleDark,
-    toggleAIToolbox,
-    toggleImageReupload,
     toggleScrollSync,
     setViewMode,
     setPreviewDevice,

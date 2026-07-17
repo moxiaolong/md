@@ -7,8 +7,8 @@ export default {
     jaJP: `日本語`,
   },
   meta: {
-    title: `微信 Markdown 编辑器 | Doocs`,
-    description: `Wechat Markdown Editor | 一款高度简洁的微信 Markdown 编辑器`,
+    title: `微信 Markdown 编辑器 | 图片转base64（自用精简）`,
+    description: `Wechat Markdown Editor | 图片转base64（自用精简）`,
   },
   loader: {
     tagline: `致力于让 Markdown 编辑更简单`,
@@ -105,10 +105,7 @@ export default {
     exportPdf: `PDF 文档`,
     exportPng: `PNG 图片`,
     templateManage: `模板管理`,
-    marketplace: `社区主题`,
     contentManage: `内容管理`,
-    cloudSync: `云同步`,
-    sharePreview: `分享预览`,
     preferences: `偏好设置`,
     importExportConfig: `导入/导出配置`,
     undo: `撤销`,
@@ -154,10 +151,7 @@ export default {
     commandPalette: `命令面板`,
     keyboardShortcuts: `快捷键`,
     syntaxHelp: `语法帮助`,
-    feedback: `反馈`,
-    releaseHistory: `版本历史`,
     about: `关于`,
-    fund: `赞赏`,
   },
   header: {
     menu: `菜单`,
@@ -191,6 +185,7 @@ export default {
   },
   styleOptions: {
     theme: {
+      soulstation: { label: `SoulStation`, desc: `` },
       default: { label: `经典`, desc: `` },
       grace: { label: `优雅`, desc: `{'@'}brzhang` },
       simple: { label: `简洁`, desc: `{'@'}okooo5km` },

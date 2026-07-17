@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BookText, Command, Heart, HelpCircle, Keyboard, MessageSquare, Tag } from '@lucide/vue'
+import { BookText, Command, HelpCircle, Keyboard } from '@lucide/vue'
 
 import { ctrlSign, shiftSign } from '@md/shared/configs'
 
@@ -19,7 +19,6 @@ const uiStore = useUIStore()
 
 const {
   toggleShowAboutDialog,
-  toggleShowFundDialog,
   toggleShowMarkdownHelpDialog,
   toggleShowKeyboardShortcutsDialog,
   toggleShowCommandPalette,
@@ -27,10 +26,6 @@ const {
 
 function openAboutDialog() {
   toggleShowAboutDialog(true)
-}
-
-function openFundDialog() {
-  toggleShowFundDialog(true)
 }
 
 function openMarkdownHelp() {
@@ -43,14 +38,6 @@ function openCommandPalette() {
 
 function openKeyboardShortcuts() {
   toggleShowKeyboardShortcutsDialog(true)
-}
-
-function openFeedback() {
-  window.open(`https://github.com/doocs/md/issues`, `_blank`)
-}
-
-function openReleases() {
-  window.open(`https://github.com/doocs/md/releases`, `_blank`)
 }
 </script>
 
@@ -80,21 +67,9 @@ function openReleases() {
         <BookText class="mr-2 h-4 w-4" />
         {{ t('menu.syntaxHelp') }}
       </MenubarItem>
-      <MenubarItem @click="openFeedback()">
-        <MessageSquare class="mr-2 h-4 w-4" />
-        {{ t('menu.feedback') }}
-      </MenubarItem>
-      <MenubarItem @click="openReleases()">
-        <Tag class="mr-2 h-4 w-4" />
-        {{ t('menu.releaseHistory') }}
-      </MenubarItem>
       <MenubarItem @click="openAboutDialog()">
         <HelpCircle class="mr-2 h-4 w-4" />
         {{ t('menu.about') }}
-      </MenubarItem>
-      <MenubarItem @click="openFundDialog()">
-        <Heart class="mr-2 h-4 w-4" />
-        {{ t('menu.fund') }}
       </MenubarItem>
     </MenubarSubContent>
   </MenubarSub>
@@ -122,21 +97,9 @@ function openReleases() {
         <BookText class="mr-2 h-4 w-4" />
         {{ t('menu.syntaxHelp') }}
       </MenubarItem>
-      <MenubarItem @click="openFeedback()">
-        <MessageSquare class="mr-2 h-4 w-4" />
-        {{ t('menu.feedback') }}
-      </MenubarItem>
-      <MenubarItem @click="openReleases()">
-        <Tag class="mr-2 h-4 w-4" />
-        {{ t('menu.releaseHistory') }}
-      </MenubarItem>
       <MenubarItem @click="openAboutDialog()">
         <HelpCircle class="mr-2 h-4 w-4" />
         {{ t('menu.about') }}
-      </MenubarItem>
-      <MenubarItem @click="openFundDialog()">
-        <Heart class="mr-2 h-4 w-4" />
-        {{ t('menu.fund') }}
       </MenubarItem>
     </MenubarContent>
   </MenubarMenu>

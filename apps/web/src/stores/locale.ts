@@ -1,7 +1,7 @@
 import type { AppLocale } from '@/i18n/types'
-import { getNextLocale, LOCALE_STORAGE_KEY } from '@/i18n/constants'
+import { LOCALE_STORAGE_KEY } from '@/i18n/constants'
 import { detectInitialLocale } from '@/i18n/detect'
-import { ensureLocaleMessages, getAppI18n } from '@/i18n/index'
+import { getAppI18n } from '@/i18n/index'
 import { t } from '@/i18n/translate'
 import { store } from '@/storage'
 
@@ -45,19 +45,7 @@ export const useLocaleStore = defineStore(`locale`, () => {
     { immediate: true },
   )
 
-  async function setLocale(value: AppLocale) {
-    await ensureLocaleMessages(getAppI18n(), value)
-    locale.value = value
-  }
-
-  /** Cycle to the next locale in SUPPORTED_LOCALES order. */
-  async function cycleLocale() {
-    await setLocale(getNextLocale(locale.value))
-  }
-
   return {
     locale,
-    setLocale,
-    cycleLocale,
   }
 })

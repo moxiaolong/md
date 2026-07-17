@@ -19,14 +19,8 @@ const dialogOpen = computed({
   set: (val: boolean) => emit(`update:open`, val),
 })
 
-const links = [
-  { label: `GitHub`, url: `https://github.com/doocs/md` },
-  { label: `Gitee`, url: `https://gitee.com/doocs/md` },
-  { label: `GitCode`, url: `https://gitcode.com/doocs/md` },
-]
-
-function onRedirect(url: string) {
-  window.open(url, `_blank`, `noopener,noreferrer`)
+function onRedirect() {
+  window.open(`https://github.com/doocs/md`, `_blank`, `noopener,noreferrer`)
 }
 </script>
 
@@ -38,26 +32,10 @@ function onRedirect(url: string) {
     :icon="HelpCircle"
   >
     <div class="space-y-4 px-4 py-4 text-center sm:px-6">
-      <p class="text-sm text-muted-foreground">
-        {{ t('about.followHint') }}
-      </p>
-      <img
-        class="mx-auto max-w-[200px] rounded-xl ring-1 ring-border"
-        src="https://cdn-doocs.oss-cn-shenzhen.aliyuncs.com/gh/doocs/md/images/1648303220922-7e14aefa-816e-44c1-8604-ade709ca1c69.png"
-        :alt="t('about.imageAlt')"
-      >
-      <div class="grid grid-cols-3 gap-2">
-        <Button
-          v-for="link in links"
-          :key="link.url"
-          variant="outline"
-          class="h-10 min-w-0 gap-1.5 px-2"
-          @click="onRedirect(link.url)"
-        >
-          <ExternalLink class="size-3.5 shrink-0" />
-          <span class="truncate text-xs sm:text-sm">{{ link.label }}</span>
-        </Button>
-      </div>
+      <Button variant="outline" class="h-10 gap-1.5 px-4" @click="onRedirect()">
+        <ExternalLink class="size-3.5" />
+        <span class="text-sm">GitHub</span>
+      </Button>
     </div>
   </PanelDialog>
 </template>
