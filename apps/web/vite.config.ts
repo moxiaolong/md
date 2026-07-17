@@ -18,7 +18,7 @@ const isUTools = process.env.SERVER_ENV === `UTOOLS`
 const isCfWorkers = process.env.CF_WORKERS === `1`
 const isCfPages = process.env.CF_PAGES === `1`
 
-const base = isNetlify || isCfWorkers || isCfPages ? `/` : isUTools ? `./` : `/md/`
+const base = isNetlify || isCfWorkers || isCfPages ? `/` : isUTools ? `./` : `/`
 
 const cloudflarePlugin = isCfWorkers
   ? (await import(`@cloudflare/vite-plugin`)).cloudflare()
