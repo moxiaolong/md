@@ -6,28 +6,27 @@ import zhCN from './messages/zh-CN/index'
 
 type LocaleMessages = typeof zhCN
 
+export type MessageSchema = LocaleMessages
+
+declare module 'vue-i18n' {
+  export interface DefineLocaleMessage extends MessageSchema {}
+}
+
 export async function ensureLocaleMessages(_i18n: I18n, _locale: AppLocale): Promise<void> {
   // Only zh-CN is supported; no lazy loading needed.
 }
 
 export async function setupI18n(_locale: AppLocale = DEFAULT_LOCALE): Promise<I18n> {
-  const i18n = createI18n({
+  const i18n = createI18n<MessageSchema, 'zh-CN'>({
     legacy: false,
-    locale: DEFAULT_LOCALE,
-    fallbackLocale: DEFAULT_LOCALE,
+    locale: 'zh-CN',
+    fallbackLocale: 'zh-CN',
     messages: {
-      [DEFAULT_LOCALE]: zhCN,
+      'zh-CN': zhCN,
     },
   })
 
-  return i18n
-}
-
-export type MessageSchema = LocaleMessages
-
-declare module 'vue-i18n' {
-
-  export interface DefineLocaleMessage extends MessageSchema {}
+  return i18n as unknown as I18n
 }
 
 let appI18n: I18n | null = null

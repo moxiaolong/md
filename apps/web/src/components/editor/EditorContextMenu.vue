@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import type { EditorView } from '@codemirror/view'
-import { foldedRanges, foldEffect, unfoldEffect } from '@codemirror/language'
+import { foldEffect } from '@codemirror/language'
 import {
   Blocks,
   Bold,
@@ -141,11 +141,7 @@ function toggleBase64Fold() {
     return
   const from = line.from + openParen + 1
   const to = line.from + closeParen
-  const ranges = view.state.field(foldedRanges, false)
-  const isFolded = ranges?.between(from, to) ?? false
-  view.dispatch({
-    effects: (isFolded ? unfoldEffect : foldEffect).of({ from, to }),
-  })
+  view.dispatch({ effects: foldEffect.of({ from, to }) })
 }
 </script>
 
