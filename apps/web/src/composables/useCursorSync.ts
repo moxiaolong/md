@@ -1,5 +1,5 @@
+import type { EditorView } from '@codemirror/view'
 import type { MaybeRefOrGetter } from 'vue'
-import { EditorView } from '@codemirror/view'
 import { useUIStore } from '@/stores/ui'
 
 /** Click preview element to jump to the matching editor position. */
@@ -114,7 +114,6 @@ export function useCursorSync(
 
       view.dispatch({
         selection: { anchor: pos },
-        effects: EditorView.scrollIntoView(pos, { y: `center` }),
       })
       view.focus()
     }
