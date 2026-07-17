@@ -203,6 +203,7 @@ export default {
       larger: `更大`,
     },
     color: {
+      soulstationPurple: { label: `SoulStation紫`, desc: `自用默认` },
       classicBlue: { label: `经典蓝`, desc: `稳重冷静` },
       emeraldGreen: { label: `翡翠绿`, desc: `自然平衡` },
       vividOrange: { label: `活力橘`, desc: `热情活力` },

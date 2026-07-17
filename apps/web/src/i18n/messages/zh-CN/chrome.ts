@@ -50,6 +50,7 @@ export default {
     exportHtml: `导出 .html`,
     exportPdf: `导出 .pdf`,
     exportPng: `导出 .png`,
+    toggleBase64Fold: `折叠/展开 Base64 图片`,
   },
   search: {
     toggleReplace: `切换替换`,

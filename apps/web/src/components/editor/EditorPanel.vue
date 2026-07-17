@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { foldEffect, foldService } from '@codemirror/language'
 import { Compartment, EditorState, Prec } from '@codemirror/state'
 import { EditorView, keymap, placeholder } from '@codemirror/view'
 import { history, markdownSetup, replaceDocumentWithoutHistory, resetEditorHistory, theme } from '@md/shared/editor'
@@ -171,18 +172,37 @@ function uploaded(imageUrl: string) {
   const markdownImage = `![](${imageUrl})`
   if (codeMirrorView.value) {
     codeMirrorView.value.dispatch(codeMirrorView.value.state.replaceSelection(`\n${markdownImage}\n`))
+    if (imageUrl.startsWith('data:image/')) {
+      const view = codeMirrorView.value
+      const doc = view.state.doc.toString()
+      const urlPos = doc.indexOf(imageUrl)
+      if (urlPos !== -1) {
+        const openParen = doc.lastIndexOf('(', urlPos)
+        const closeParen = doc.indexOf(')', urlPos)
+        if (openParen !== -1 && closeParen !== -1 && closeParen > openParen) {
+          view.dispatch({ effects: foldEffect.of({ from: openParen + 1, to: closeParen }) })
+        }
+      }
+    }
   }
   toast.success(t('editorPanel.uploadSuccess'))
 }
 
 async function uploadImage(
-  file: File,
+  file: File | string,
   cb?: { (url: any, data: string): void, (arg0: unknown): void } | undefined,
   applyUrl?: boolean,
 ) {
   try {
     isImgLoading.value = true
-    const base64Content = await toBase64(file)
+    let base64Content: string
+    if (typeof file === 'string') {
+      base64Content = file
+    }
+    else {
+      const rawBase64 = await toBase64(file)
+      base64Content = `data:${file.type};base64,${rawBase64}`
+    }
     if (cb) {
       cb(base64Content, base64Content)
     }
@@ -349,6 +369,19 @@ function createPasteHandler() {
 }
 
 // --- CodeMirror creation ---
+const base64ImageFold = foldService.of((state, lineStart) => {
+  const lineEnd = state.doc.lineAt(lineStart).to
+  const line = state.sliceDoc(lineStart, lineEnd)
+  const idx = line.indexOf('](data:image/')
+  if (idx === -1)
+    return null
+  const openParen = line.indexOf('(', idx)
+  const closeParen = line.indexOf(')', openParen)
+  if (openParen === -1 || closeParen === -1 || closeParen <= openParen)
+    return null
+  return { from: lineStart + openParen + 1, to: lineStart + closeParen }
+})
+
 function createFormTextArea(dom: HTMLDivElement) {
   const state = EditorState.create({
     doc: posts.value[currentPostIndex.value].content,
@@ -378,6 +411,7 @@ function createFormTextArea(dom: HTMLDivElement) {
       EditorView.domEventHandlers({
         paste: createPasteHandler(),
       }),
+      base64ImageFold,
       ...createSlashExtension(() => codeMirrorView.value),
       ...createComponentCompletionExtension(() => localizedAllComponents.value),
     ],

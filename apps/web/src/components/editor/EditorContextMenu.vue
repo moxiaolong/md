@@ -1,4 +1,6 @@
 <script setup lang='ts'>
+import type { EditorView } from '@codemirror/view'
+import { foldedRanges, foldEffect, unfoldEffect } from '@codemirror/language'
 import {
   Blocks,
   Bold,
@@ -9,6 +11,7 @@ import {
   FileImage,
   FileText,
   FileUp,
+  FoldHorizontal,
   FunctionSquare,
   Heading1,
   Heading2,
@@ -120,6 +123,29 @@ function exportEditorContent2MD() {
 
 function downloadAsCardImage() {
   exportStore.downloadAsCardImage()
+}
+
+function toggleBase64Fold() {
+  const view = editorStore.editor ? toRaw(editorStore.editor) as EditorView : null
+  if (!view)
+    return
+  const pos = view.state.selection.main.head
+  const line = view.state.doc.lineAt(pos)
+  const text = line.text
+  const idx = text.indexOf('](data:image/')
+  if (idx === -1)
+    return
+  const openParen = text.indexOf('(', idx)
+  const closeParen = text.indexOf(')', openParen)
+  if (openParen === -1 || closeParen === -1 || closeParen <= openParen)
+    return
+  const from = line.from + openParen + 1
+  const to = line.from + closeParen
+  const ranges = view.state.field(foldedRanges, false)
+  const isFolded = ranges?.between(from, to) ?? false
+  view.dispatch({
+    effects: (isFolded ? unfoldEffect : foldEffect).of({ from, to }),
+  })
 }
 </script>
 
@@ -295,6 +321,13 @@ function downloadAsCardImage() {
       <ContextMenuItem @click="clearContent()">
         <Trash2 class="mr-2 h-4 w-4" />
         {{ t('menu.clear') }}
+      </ContextMenuItem>
+
+      <ContextMenuSeparator />
+
+      <ContextMenuItem @click="toggleBase64Fold()">
+        <FoldHorizontal class="mr-2 h-4 w-4" />
+        {{ t('contextMenu.toggleBase64Fold') }}
       </ContextMenuItem>
 
       <ContextMenuSeparator />

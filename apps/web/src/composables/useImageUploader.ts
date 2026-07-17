@@ -58,7 +58,7 @@ export function useImageUploader() {
       }
 
       const base64Content = await toBase64(file)
-      return base64Content
+      return `data:${file.type};base64,${base64Content}`
     }
     catch (err: any) {
       console.error(err)

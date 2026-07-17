@@ -38,7 +38,7 @@ const { isDark } = storeToRefs(uiStore)
 const { isMobile, viewMode, previewDevice, enableScrollSync } = storeToRefs(uiStore)
 
 const isMoreOpen = ref(false)
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 function toggleTheme() {
   isMoreOpen.value = false

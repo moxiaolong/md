@@ -35,7 +35,8 @@ async function handleFile(file: File) {
 
   isUploading.value = true
   try {
-    const base64 = await toBase64(file)
+    const rawBase64 = await toBase64(file)
+    const base64 = `data:${file.type};base64,${rawBase64}`
     previewUrl.value = base64
     emit(`uploadImage`, base64)
   }
