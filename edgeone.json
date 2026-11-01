@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm web build",
+  "installCommand": "pnpm install",
+  "outputDirectory": "apps/web/dist",
+  "nodeVersion": "24.18.0"
+}

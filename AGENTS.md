@@ -7,7 +7,7 @@
 **doocs/md** — 一款微信 Markdown 编辑器，将 Markdown 渲染为微信公众号文章格式。支持自定义主题样式、多图床、AI 助手、浏览器扩展、**简体中文 / English 界面**等特性。
 
 - **在线地址:** https://md.doocs.org
-- **Node 版本:** >= 22.22.2（`.nvmrc`: v22.22.2）
+- **Node 版本:** >= 22.22.2（`.nvmrc`: 24.18.0，对齐 EdgeOne Makers 预装版本）
 - **包管理器:** pnpm（monorepo）
 - **npm 镜像:** https://registry.npmmirror.com（`.npmrc`）
 
